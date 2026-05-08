@@ -1,0 +1,74 @@
+[
+  {
+    "model": "clients.client",
+    "pk": 1,
+    "fields": {
+      "name": "Coca-Cola",
+      "description": "Global beverage brand represented by DemoPower in Cebu.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "clients.client",
+    "pk": 2,
+    "fields": {
+      "name": "Monde",
+      "description": "Biscuit and snack food brand.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "clients.client",
+    "pk": 3,
+    "fields": {
+      "name": "Unifam",
+      "description": "Consumer goods brand.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "clients.client",
+    "pk": 4,
+    "fields": {
+      "name": "BLK",
+      "description": "Skincare and personal care brand.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "clients.client",
+    "pk": 5,
+    "fields": {
+      "name": "Century Pacific Food Inc",
+      "description": "Canned goods and food manufacturing brand.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "clients.client",
+    "pk": 6,
+    "fields": {
+      "name": "Nivea",
+      "description": "Skincare and beauty products brand.",
+      "logo": null,
+      "is_active": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  }
+]
