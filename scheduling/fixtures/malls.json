@@ -1,0 +1,14 @@
+[
+  {"model": "scheduling.mall", "pk": 1,
+    "fields": {"name": "SM City Cebu", "address": "North Reclamation Area, Cebu City", "city": "Cebu City", "is_active": true}},
+  {"model": "scheduling.mall", "pk": 2,
+    "fields": {"name": "Ayala Center Cebu", "address": "Cebu Business Park, Cebu City", "city": "Cebu City", "is_active": true}},
+  {"model": "scheduling.mall", "pk": 3,
+    "fields": {"name": "SM Seaside City Cebu", "address": "South Road Properties, Cebu City", "city": "Cebu City", "is_active": true}},
+  {"model": "scheduling.mall", "pk": 4,
+    "fields": {"name": "Robinsons Galleria Cebu", "address": "General Maxilom Ave, Cebu City", "city": "Cebu City", "is_active": true}},
+  {"model": "scheduling.mall", "pk": 5,
+    "fields": {"name": "Pacific Mall Cebu", "address": "Osmena Blvd, Cebu City", "city": "Cebu City", "is_active": true}},
+  {"model": "scheduling.mall", "pk": 6,
+    "fields": {"name": "Gaisano Country Mall", "address": "Banilad, Cebu City", "city": "Cebu City", "is_active": true}}
+]
