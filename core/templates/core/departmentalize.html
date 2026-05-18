@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+{% block title %}Departmentalize – Demo-District{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">DEPARTMENTALIZE</div>
+    <div class="page-sub">All scheduled product demonstrations</div>
+  </div>
+  <form method="get" style="display:flex;gap:8px;">
+    <select name="status" class="filter-select" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="pending"   {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+      <option value="ongoing"   {% if status_filter == 'ongoing' %}selected{% endif %}>Ongoing</option>
+      <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+    </select>
+  </form>
+</div>
+
+<div class="summary-row">
+  <div class="summary-card"><div class="s-icon">📦</div><div><div class="s-num">{{ total }}</div><div class="s-label">Total</div></div></div>
+  <div class="summary-card"><div class="s-icon">🔄</div><div><div class="s-num">{{ ongoing }}</div><div class="s-label">Ongoing</div></div></div>
+  <div class="summary-card"><div class="s-icon">✅</div><div><div class="s-num">{{ completed }}</div><div class="s-label">Completed</div></div></div>
+  <div class="summary-card"><div class="s-icon">⏳</div><div><div class="s-num">{{ pending }}</div><div class="s-label">Pending</div></div></div>
+</div>
+
+<div class="table-card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Client</th>
+        <th>Department</th>
+        <th>Qty</th>
+        <th>Location</th>
+        <th>Date / Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in schedules %}
+      <tr id="row-{{ s.id }}">
+        <td>
+          <div class="product-text">
+            <div class="fw-bold">{{ s.product.name }}</div>
+            <div class="text-muted small">{{ s.product.category }}</div>
+          </div>
+        </td>
+        <td>{{ s.client.name }}</td>
+        <td>{{ s.department.name }}</td>
+        <td>{{ s.quantity }} pcs</td>
+        <td>
+          <div class="fw-bold">{{ s.location.name }}</div>
+          <div class="text-muted small">{{ s.location.city }}</div>
+        </td>
+        <td>
+          <div>{{ s.scheduled_date|date:"M j, Y" }}</div>
+          <div class="text-muted small">{{ s.scheduled_time|time:"g:i A" }}</div>
+        </td>
+        <td>
+          <span class="status status-{{ s.status }}">{{ s.get_status_display }}</span>
+        </td>
+        <td class="actions-cell">
+          <button class="action-btn" onclick="changeStatus({{ s.id }}, '{{ s.status }}')" title="Change Status">✏️</button>
+          <button class="action-btn" onclick="deleteRow({{ s.id }})" title="Delete">🗑️</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="empty-row">No schedules found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const CSRF = '{{ csrf_token }}';
+
+async function changeStatus(id, current) {
+  const options = ['pending','confirmed','ongoing','completed','cancelled'];
+  const next = options[(options.indexOf(current) + 1) % options.length];
+  const res = await fetch(`/api/schedule/${id}/status/`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken': CSRF},
+    body: JSON.stringify({status: next})
+  });
+  if (res.ok) location.reload();
+}
+
+async function deleteRow(id) {
+  if (!confirm('Delete this schedule?')) return;
+  const res = await fetch(`/api/schedule/${id}/delete/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': CSRF}
+  });
+  if (res.ok) document.getElementById(`row-${id}`).remove();
+}
+</script>
+{% endblock %}
