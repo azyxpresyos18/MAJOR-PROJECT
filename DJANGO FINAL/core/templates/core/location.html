@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% block title %}Locations – Demo-District{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">LOCATIONS</div>
+    <div class="page-sub">{{ locations|length }} venue{{ locations|length|pluralize }}</div>
+  </div>
+  <a href="/admin/core/location/add/" class="btn-primary">+ Add Location</a>
+</div>
+
+<div class="location-grid">
+  {% for loc in locations %}
+  <div class="location-card {% if loc.is_available %}loc-available{% else %}loc-busy{% endif %}">
+    <div class="loc-header">
+      <div class="loc-icon">🏬</div>
+      <span class="loc-badge {% if loc.is_available %}badge-available{% else %}badge-busy{% endif %}">
+        {% if loc.is_available %}Available{% else %}Busy{% endif %}
+      </span>
+    </div>
+    <div class="loc-name">{{ loc.name }}</div>
+    <div class="loc-city">{{ loc.city }}</div>
+    <div class="loc-detail"><span>📍</span> {{ loc.address }}</div>
+    {% if loc.open_hours %}<div class="loc-detail"><span>🕐</span> {{ loc.open_hours }}</div>{% endif %}
+    {% if loc.floor_area %}<div class="loc-detail"><span>📐</span> {{ loc.floor_area }}</div>{% endif %}
+    <div class="loc-schedules">{{ loc.schedules.count }} active schedule{{ loc.schedules.count|pluralize }}</div>
+  </div>
+  {% empty %}
+  <div class="empty-state" style="grid-column:1/-1;">
+    <div class="empty-icon">📍</div>
+    <p>No locations yet. <a href="/admin/core/location/add/">Add one in the admin panel.</a></p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

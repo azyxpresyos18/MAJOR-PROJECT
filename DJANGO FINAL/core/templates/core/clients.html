@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% block title %}Clients – Demo-District{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">CLIENTS</div>
+    <div class="page-sub">{{ clients|length }} registered client{{ clients|length|pluralize }}</div>
+  </div>
+  <a href="/admin/core/client/add/" class="btn-primary">+ Add Client</a>
+</div>
+
+<div class="client-grid">
+  {% for client in clients %}
+  <div class="client-card">
+    <div class="client-avatar">
+      {% if client.logo %}
+        <img src="{{ client.logo.url }}" alt="{{ client.name }}">
+      {% else %}
+        <span class="client-initial">{{ client.name|first }}</span>
+      {% endif %}
+    </div>
+    <div class="client-info">
+      <div class="client-name">{{ client.name }}</div>
+      <div class="client-meta">{{ client.products.count }} product{{ client.products.count|pluralize }}</div>
+      <div class="client-meta">{{ client.schedules.count }} schedule{{ client.schedules.count|pluralize }}</div>
+    </div>
+    <a href="{% url 'products' %}?client={{ client.id }}" class="btn-sm">View Products</a>
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <div class="empty-icon">🏢</div>
+    <p>No clients yet. <a href="/admin/core/client/add/">Add one in the admin panel.</a></p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

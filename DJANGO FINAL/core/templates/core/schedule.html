@@ -1,0 +1,168 @@
+{% extends 'core/base.html' %}
+{% block title %}Schedule – Demo-District{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">SCHEDULE</div>
+    <div class="page-sub">{{ schedules|length }} appointment{{ schedules|length|pluralize }}</div>
+  </div>
+  <button class="btn-primary" onclick="toggleForm()">+ New Schedule</button>
+</div>
+
+<!-- NEW SCHEDULE FORM -->
+<div class="schedule-form-wrap" id="scheduleForm" style="display:none;">
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="card-title">NEW SCHEDULE</div>
+      <button onclick="toggleForm()" class="close-btn">✕</button>
+    </div>
+    <form method="post" action="{% url 'schedule' %}">
+      {% csrf_token %}
+      <div class="details-grid">
+        <div class="form-group">
+          <label>Client *</label>
+          <select name="client" required class="form-control" onchange="filterProducts(this.value)">
+            <option value="">Select client...</option>
+            {% for c in clients %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Product *</label>
+          <select name="product" required class="form-control" id="productSelect">
+            <option value="">Select product...</option>
+            {% for p in products %}<option value="{{ p.id }}" data-client="{{ p.client.id }}">{{ p.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select name="department" required class="form-control">
+            <option value="">Select department...</option>
+            {% for d in departments %}<option value="{{ d.id }}">{{ d.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Location *</label>
+          <select name="location" required class="form-control">
+            <option value="">Select location...</option>
+            {% for l in locations %}<option value="{{ l.id }}">{{ l.name }} – {{ l.city }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" name="date" required class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Time *</label>
+          <input type="time" name="time" required class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" name="quantity" min="1" value="1" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Assigned To</label>
+          <input type="text" name="assigned_to" placeholder="Staff name" class="form-control">
+        </div>
+        <div class="form-group form-full">
+          <label>Notes</label>
+          <textarea name="notes" rows="2" placeholder="Special instructions..." class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" onclick="toggleForm()" class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Confirm Schedule</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- UPCOMING SCHEDULES -->
+<div class="table-card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Product</th>
+        <th>Location</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Assigned To</th>
+        <th>Qty</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in schedules %}
+      <tr id="srow-{{ s.id }}">
+        <td>
+          <div class="client-cell">
+            <div class="client-avatar-sm">{{ s.client.name|first }}</div>
+            <div>
+              <div class="fw-bold">{{ s.client.name }}</div>
+              <div class="text-muted small">{{ s.department.name }}</div>
+            </div>
+          </div>
+        </td>
+        <td>{{ s.product.name }}</td>
+        <td>
+          <div class="fw-bold">{{ s.location.name }}</div>
+          <div class="text-muted small">{{ s.location.city }}</div>
+        </td>
+        <td><span class="date-badge">{{ s.scheduled_date|date:"M j, Y" }}</span></td>
+        <td><span class="time-badge">{{ s.scheduled_time|time:"g:i A" }}</span></td>
+        <td>{{ s.assigned_to|default:"—" }}</td>
+        <td>{{ s.quantity }}</td>
+        <td><span class="status status-{{ s.status }}">{{ s.get_status_display }}</span></td>
+        <td class="actions-cell">
+          <button class="action-btn" onclick="cycleStatus({{ s.id }}, '{{ s.status }}')" title="Change Status">✏️</button>
+          <button class="action-btn" onclick="delSched({{ s.id }})" title="Delete">🗑️</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="9" class="empty-row">No schedules yet. Create one above!</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const CSRF = '{{ csrf_token }}';
+const STATUS_ORDER = ['pending','confirmed','ongoing','completed','cancelled'];
+
+function toggleForm() {
+  const f = document.getElementById('scheduleForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function filterProducts(clientId) {
+  const sel = document.getElementById('productSelect');
+  [...sel.options].forEach(o => {
+    if (!o.value) return;
+    o.style.display = (!clientId || o.dataset.client === clientId) ? '' : 'none';
+  });
+  sel.value = '';
+}
+
+async function cycleStatus(id, current) {
+  const next = STATUS_ORDER[(STATUS_ORDER.indexOf(current) + 1) % STATUS_ORDER.length];
+  const res = await fetch(`/api/schedule/${id}/status/`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken': CSRF},
+    body: JSON.stringify({status: next})
+  });
+  if (res.ok) location.reload();
+}
+
+async function delSched(id) {
+  if (!confirm('Delete this schedule?')) return;
+  const res = await fetch(`/api/schedule/${id}/delete/`, {
+    method: 'POST', headers: {'X-CSRFToken': CSRF}
+  });
+  if (res.ok) document.getElementById(`srow-${id}`).remove();
+}
+</script>
+{% endblock %}
