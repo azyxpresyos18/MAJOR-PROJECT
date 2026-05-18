@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% block title %}Home – Demo-District{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1 class="hero-title">DEMO-DISTRICT</h1>
+  <p class="hero-sub">DEMOPOWER'S CLIENT-PRODUCT DEPARTMENTALIZATION SYSTEM</p>
+</div>
+
+<div class="summary-strip">
+  <div class="stat-pill"><span class="stat-num">{{ total_schedules }}</span><span class="stat-label">Total Schedules</span></div>
+  <div class="stat-pill"><span class="stat-num">{{ ongoing }}</span><span class="stat-label">Ongoing</span></div>
+  <div class="stat-pill"><span class="stat-num">{{ pending }}</span><span class="stat-label">Pending</span></div>
+  <div class="stat-pill"><span class="stat-num">{{ completed }}</span><span class="stat-label">Completed</span></div>
+  <div class="stat-pill"><span class="stat-num">{{ total_clients }}</span><span class="stat-label">Clients</span></div>
+  <div class="stat-pill"><span class="stat-num">{{ total_products }}</span><span class="stat-label">Products</span></div>
+</div>
+
+<div class="home-cards">
+  <a href="{% url 'clients' %}" class="home-card">
+    <div class="home-card-icon">🏢</div>
+    <h2>CLIENT</h2>
+    <p>Manage companies like Coca-Cola, Nivea, Monde &amp; more</p>
+  </a>
+  <a href="{% url 'products' %}" class="home-card home-card-featured">
+    <div class="home-card-icon">📦</div>
+    <h2>PRODUCT</h2>
+    <p>Browse and manage all client product lines</p>
+  </a>
+  <a href="{% url 'departmentalize' %}" class="home-card">
+    <div class="home-card-icon">🗂</div>
+    <h2>DEPARTMENT</h2>
+    <p>Track schedules and locations by department</p>
+  </a>
+  <a href="{% url 'location' %}" class="home-card">
+    <div class="home-card-icon">📍</div>
+    <h2>LOCATION</h2>
+    <p>Manage mall and venue assignments</p>
+  </a>
+  <a href="{% url 'schedule' %}" class="home-card home-card-featured">
+    <div class="home-card-icon">📅</div>
+    <h2>SCHEDULE</h2>
+    <p>Create and track all demo appointments</p>
+  </a>
+</div>
+{% endblock %}

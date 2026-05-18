@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo-District – Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="login-page">
+
+<div class="login-container">
+  <div class="login-card">
+
+    <div class="login-left">
+      <img src="https://demopowerph.com/images/logo.png" alt="DemoPower" class="login-logo">
+      <h1 class="login-title">DEMO-DISTRICT</h1>
+      <p class="login-sub">DEMOPOWER'S CLIENT-PRODUCT<br>DEPARTMENTALIZATION SYSTEM</p>
+    </div>
+
+    <div class="login-right">
+      <h2 class="form-heading">SIGN IN</h2>
+
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="form-error">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="field">
+          <label>Email / Username</label>
+          <input type="text" name="email" placeholder="Enter your username" required autofocus>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="login-btns">
+          <button type="submit" class="btn-primary">SIGN IN</button>
+        </div>
+      </form>
+      <p class="login-hint">Ask your administrator to create your account.</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

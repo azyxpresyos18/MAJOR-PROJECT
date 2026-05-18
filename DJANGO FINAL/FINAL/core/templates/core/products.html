@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% block title %}Products – Demo-District{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">PRODUCTS</div>
+    <div class="page-sub">{{ products|length }} product{{ products|length|pluralize }}</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <form method="get" style="display:flex;gap:8px;align-items:center;">
+      <select name="client" class="filter-select" onchange="this.form.submit()">
+        <option value="">All Clients</option>
+        {% for c in clients %}
+        <option value="{{ c.id }}" {% if selected_client == c.id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+    <a href="/admin/core/product/add/" class="btn-primary">+ Add Product</a>
+  </div>
+</div>
+
+<div class="product-grid">
+  {% for product in products %}
+  <div class="product-card">
+    <div class="product-img">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <div class="product-placeholder">{{ product.name|first }}</div>
+      {% endif %}
+    </div>
+    <div class="product-info">
+      <div class="product-name">{{ product.name }}</div>
+      <div class="product-client">{{ product.client.name }}</div>
+      <div class="product-cat">{{ product.category }}</div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state" style="grid-column:1/-1;">
+    <div class="empty-icon">📦</div>
+    <p>No products yet. <a href="/admin/core/product/add/">Add one in the admin panel.</a></p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
